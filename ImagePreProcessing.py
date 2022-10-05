@@ -1,4 +1,3 @@
-import random
 import tensorflow as tf
 from tensorflow import keras
 import numpy as np
@@ -10,7 +9,7 @@ import cv2
 
 
 class MasterImage(object):
-    def __init__(self, PATH='', IMAGE_SIZE=50):
+    def __init__(self, PATH='', IMAGE_SIZE=244):
         self.PATH = PATH
         self.IMAGE_SIZE = IMAGE_SIZE
         self.image_data = []
@@ -23,10 +22,7 @@ class MasterImage(object):
 
     def get_categories(self):
         for path in os.listdir(self.PATH):
-            if '.DS_Store' in path:
-                pass
-            else:
-                self.list_categories.append(path)
+            self.list_categories.append(path)
         print("Found Categories ", self.list_categories, '\n')
         return self.list_categories
 
@@ -97,7 +93,6 @@ class MasterImage(object):
             # Read the Data from Pickle Object
             X_Temp = open('X_Data', 'rb')
             X_Data = pickle.load(X_Temp)
-
             Y_Temp = open('Y_Data', 'rb')
             Y_Data = pickle.load(Y_Temp)
 
@@ -112,21 +107,20 @@ class MasterImage(object):
             X_Data, Y_Data = self.pickle_image()
             return X_Data, Y_Data
 
-    def load_sample(self):
+    '''def load_sample(self):
         try:
-            sample = random.randint(0, 700)
+            sample = random.randint(0, 400)
             plt.imshow(X_Data[sample])
             plt.show()
         except:
-            raise Exception(ImportError)
-
+            raise Exception(ImportError)'''
 
 if __name__ == "__main__":
-    path = r'crab_raw_data\data\test'
+    path = r'crab_raw_data/data/train'
     a = MasterImage(PATH=path,
-                    IMAGE_SIZE=80)
+                    IMAGE_SIZE=244)
 
     X_Data, Y_Data = a.load_dataset()
+    print(X_Data)
     print(X_Data.shape)
-    print()
-    a.load_sample()
+
