@@ -16,8 +16,10 @@ model = keras.Sequential([
     keras.layers.Flatten(input_shape=(80,80,1)),
     keras.layers.Dense(128, activation="relu"),
     keras.layers.Dense(10, activation="softmax")
-    ])
+    ]
+)
 
 model.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=["accuracy"])
 
 model.fit(X_Data, Y_Data, epochs=20)
+tf.keras.models.save_model(filepath='Model/',model=model)
