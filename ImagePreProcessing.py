@@ -6,10 +6,11 @@ import pandas as pd
 import os
 import pickle
 import cv2
+from keras.preprocessing.image import ImageDataGenerator
 
 
 class MasterImage(object):
-    def __init__(self, PATH='', IMAGE_SIZE=244):
+    def __init__(self, PATH='', IMAGE_SIZE=256):
         self.PATH = PATH
         self.IMAGE_SIZE = IMAGE_SIZE
         self.image_data = []
@@ -71,56 +72,88 @@ class MasterImage(object):
         """
         :return: None Creates a Pickle Object of DataSet
         """
-        # Call the Function and Get the Data
-        X_Data, Y_Data = self.Process_Image()
+        if 'train' in self.PATH:
+            # Call the Function and Get the Data
+            X_Data, Y_Data = self.Process_Image()
 
-        # Write the Entire Data into a Pickle File
-        pickle_out = open('X_Data', 'wb')
-        pickle.dump(X_Data, pickle_out)
-        pickle_out.close()
+            # Write the Entire Data into a Pickle File
+            pickle_out = open('X_Data', 'wb')
+            pickle.dump(X_Data, pickle_out)
+            pickle_out.close()
 
-        # Write the Y Label Data
-        pickle_out = open('Y_Data', 'wb')
-        pickle.dump(Y_Data, pickle_out)
-        pickle_out.close()
+            # Write the Y Label Data
+            pickle_out = open('Y_Data', 'wb')
+            pickle.dump(Y_Data, pickle_out)
+            pickle_out.close()
 
-        print("Pickled Image Successfully ")
-        return X_Data, Y_Data
+            print("Pickled Image Successfully ")
+            return X_Data, Y_Data
+
+        elif 'test' in self.PATH:
+            # Call the Function and Get the Data
+            X_Test, Y_Test = self.Process_Image()
+
+            # Write the Entire Data into a Pickle File
+            pickle_out = open('X_Test', 'wb')
+            pickle.dump(X_Test, pickle_out)
+            pickle_out.close()
+
+            # Write the Y Label Data
+            pickle_out = open('Y_Test', 'wb')
+            pickle.dump(Y_Test, pickle_out)
+            pickle_out.close()
+
+            print("Pickled Image Successfully ")
+            return X_Test, Y_Test
+
+
 
     def load_dataset(self):
 
-        try:
-            # Read the Data from Pickle Object
-            X_Temp = open('X_Data', 'rb')
-            X_Data = pickle.load(X_Temp)
-            Y_Temp = open('Y_Data', 'rb')
-            Y_Data = pickle.load(Y_Temp)
+        if 'train' in self.PATH:
+            try:
+                # Read the Data from Pickle Object
+                X_Temp = open('X_Data', 'rb')
+                X_Data = pickle.load(X_Temp)
+                Y_Temp = open('Y_Data', 'rb')
+                Y_Data = pickle.load(Y_Temp)
 
-            print('Reading Dataset from PIckle Object')
+                print('Reading Dataset from PIckle Object')
 
-            return X_Data, Y_Data
+                return X_Data, Y_Data
 
-        except:
-            print('Could not Found Pickle File ')
-            print('Loading File and Dataset  ..........')
+            except:
+                print('Could not Found Pickle File ')
+                print('Loading File and Dataset  ..........')
 
-            X_Data, Y_Data = self.pickle_image()
-            return X_Data, Y_Data
+                X_Data, Y_Data = self.pickle_image()
+                return X_Data, Y_Data
 
-    '''def load_sample(self):
-        try:
-            sample = random.randint(0, 400)
-            plt.imshow(X_Data[sample])
-            plt.show()
-        except:
-            raise Exception(ImportError)'''
+        elif 'test' in self.PATH:
+            try:
+                # Read the Data from Pickle Object
+                X_Temp = open('X_Test', 'rb')
+                X_Test = pickle.load(X_Temp)
+                Y_Temp = open('Y_Test', 'rb')
+                Y_Test = pickle.load(Y_Temp)
 
-if __name__ == "__main__":
-    path = r'crab_raw_data/data/train'
-    a = MasterImage(PATH=path,
-                    IMAGE_SIZE=244)
+                print('Reading Dataset from PIckle Object')
 
-    X_Data, Y_Data = a.load_dataset()
-    print(X_Data)
-    print(X_Data.shape)
+                return X_Test, Y_Test
+
+            except:
+                print('Could not Found Pickle File ')
+                print('Loading File and Dataset  ..........')
+
+                X_Test, Y_Test = self.pickle_image()
+                return X_Test, Y_Test
+
+
+
+
+
+
+
+
+
 
