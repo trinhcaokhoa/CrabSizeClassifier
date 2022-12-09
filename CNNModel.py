@@ -1,11 +1,11 @@
 import random
-
+import datetime
 import tensorflow as tf
 from tensorflow import keras
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-from tensorflow.python.ops.metrics_impl import recall
+from CustomMetrics import MetricsCallback
 
 from ImagePreProcessing import MasterImage
 from keras.preprocessing.image import ImageDataGenerator
@@ -50,8 +50,11 @@ model = keras.Sequential([
 
 model.summary()
 
-model.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=["accuracy", prec])
-history = model.fit(X_Data, Y_Data, epochs=25, batch_size=3)
+model.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=["accuracy"])
+log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+metrics_callback = MetricsCallback(test_data = X_Test, y_true = Y_Test)
+history = model.fit(X_Data, Y_Data, epochs=25, batch_size=3, callbacks=[metrics_callback, tensorboard_callback])
 test_loss, test_acc = model.evaluate(X_Data, Y_Data)
 
 # Manually testing model
@@ -64,7 +67,7 @@ print(Y_Test)
 predictions = model.predict(X_Test)
 print(str(predictions.shape))
 
-count = 0
+"""count = 0
 while True:
     wrong = 0
     i = random.randint(0,300)
@@ -79,4 +82,4 @@ while True:
     if wrong == 10:
         break
 
-print(count)
+print(count)"""
