@@ -1,2 +1,3 @@
 */crab_raw_data/data/train/
 *.pkl
+**/*.pkl
